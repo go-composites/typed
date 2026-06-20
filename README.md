@@ -1,6 +1,8 @@
-<p align="center"><img src="https://raw.githubusercontent.com/go-composites/brand/main/social/golang-oop.png" alt="go-composites/typed" width="720"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/go-composites/brand/main/social/go-composites.png" alt="go-composites/typed" width="720"></p>
 
 # go-composites/typed
+
+[![ci](https://github.com/go-composites/typed/actions/workflows/ci.yml/badge.svg)](https://github.com/go-composites/typed/actions/workflows/ci.yml)
 
 A **type-safe, generics-based** variant of the go-composites building blocks.
 
