@@ -76,26 +76,17 @@ jobs:
           go-version: stable
       - run: go vet ./...
       - run: go build ./...
-      - name: Test with coverage
+      - name: Coverage (library packages must be 100%)
         shell: bash
         run: |
           set -euo pipefail
-          # Same per-package gate as `native`: the demo `main` package has no
-          # tests and no statements to exercise, and is excluded there too.
-          for pkg in $(go list ./...); do
-            if ! ls "$(go list -f '{{.Dir}}' "$pkg")"/*_test.go >/dev/null 2>&1; then
-              echo "${pkg}: no tests — skipping"
-              continue
-            fi
-            go test -cover -coverprofile=cover.out "$pkg"
-            total=$(go tool cover -func=cover.out \
-              | awk '/^total:/ {print substr($3, 1, length($3)-1)}')
-            echo "${pkg} coverage: ${total}%"
-            awk -v t="$total" -v m="$COVERAGE_MIN" \
-              'BEGIN { exit (t+0 >= m+0) ? 0 : 1 }' \
-              || { echo "coverage ${total}% < ${COVERAGE_MIN}%"; exit 1; }
-          done
-
+          GOWORK=off go test -coverprofile=cover.out ./src/...
+          total=$(go tool cover -func=cover.out \
+            | awk '/^total:/ {print substr($3, 1, length($3)-1)}')
+          echo "library coverage: ${total}%"
+          awk -v t="$total" -v m="$COVERAGE_MIN" \
+            'BEGIN { exit (t+0 >= m+0) ? 0 : 1 }' \
+            || { echo "coverage ${total}% < ${COVERAGE_MIN}%"; exit 1; }
 
   emulated:
     name: emulated ${{ matrix.arch }}
